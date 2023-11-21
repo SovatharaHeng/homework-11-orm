@@ -1,5 +1,6 @@
-from Model import Employee, Job, Assignment
-from db import session
+from Model import Assignment, Employee
+from db import session, engine
+from sqlalchemy import text
 
 
 '''
@@ -7,10 +8,12 @@ Query all employee records from the employee table
 And query employee with condition, emp_num > 101
 '''
 # employees = session.query(Employee).all()
+# for employee in employees:
+#     print(employee.emp_fname, employee.emp_lname, employee.emp_initial)
+    
 # employees = session.query(Employee).filter(Employee.emp_num > 101).all()
 # for employee in employees:
 #     print(employee.emp_lname, employee.emp_fname, employee.emp_hiredate)
-
 
 '''
 Join employee with job
@@ -44,3 +47,18 @@ Delete employee record
 '''
 Query assigment where assign_date is larger than 2010-01-01
 '''
+# assignments = session.query(Assignment).filter(Assignment.assign_date > "2010-01-01").all()
+# for assignment in assignments:
+#     print(assignment.assign_num, assignment.assign_date, assignment.assign_job)
+
+connection = engine.connect()
+query = "Select * FROM employee WHERE emp_num > :value"
+sql_expression = text(query)
+param = {'value': 101}
+result = connection.execute(sql_expression, param)
+
+for row in result:
+    print(row[0])
+
+connection.close()
+
